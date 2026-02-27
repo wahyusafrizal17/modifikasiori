@@ -32,7 +32,7 @@
                         <option value="dibatalkan" {{ request('status') === 'dibatalkan' ? 'selected' : '' }}>Dibatalkan</option>
                     </select>
                 </form>
-                <button @click="openCreate()" class="inline-flex h-10 items-center gap-2 rounded-xl bg-green-500 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-green-600 active:scale-[0.98]">
+                <button @click="openCreate()" class="inline-flex h-10 items-center gap-2 rounded-xl bg-red-500 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-600 active:scale-[0.98]">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                     Tambah WIP
                 </button>
@@ -71,7 +71,7 @@
                         <td class="px-5 py-4">
                             @if($wip->status === 'proses')
                             <div class="flex items-center justify-end gap-2">
-                                <button @click="markSelesai({{ $wip->id }}, '{{ $wip->kode_wip }}', {{ $wip->qty }})" class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500 text-white shadow-sm transition hover:bg-green-600" title="Selesai">
+                                <button @click="markSelesai({{ $wip->id }}, '{{ $wip->kode_wip }}', {{ $wip->qty }})" class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500 text-white shadow-sm transition hover:bg-red-600" title="Selesai">
                                     <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                                 </button>
                                 <button @click="markBatal({{ $wip->id }}, '{{ $wip->kode_wip }}')" class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500 text-white shadow-sm transition hover:bg-red-600" title="Batalkan">

@@ -13,6 +13,7 @@ class Product extends Model
         'kode_produk',
         'nama_produk',
         'category_id',
+        'brand_id',
         'jumlah',
         'harga_pembelian',
         'harga_jual',
@@ -24,6 +25,11 @@ class Product extends Model
         return $this->belongsTo(Category::class);
     }
 
+    public function brand()
+    {
+        return $this->belongsTo(Brand::class);
+    }
+
     public function warehouse()
     {
         return $this->belongsTo(Warehouse::class);
@@ -32,8 +38,8 @@ class Product extends Model
     public function scopeForUser($query, $user = null)
     {
         $user ??= auth()->user();
-        if ($user && !$user->isAdmin()) {
-            $query->where('warehouse_id', $user->warehouse_id);
+        if ($user) {
+            $query->where('warehouse_id', $user->activeWarehouseId());
         }
         return $query;
     }

@@ -1,28 +1,28 @@
 @extends('layouts.admin')
 
-@section('title', 'Categories')
+@section('title', 'Kategori Produk')
 
 @section('content')
 <div x-data="categoriesCrud()" class="space-y-6">
     <nav class="flex items-center gap-2 text-sm text-gray-500">
         <a href="{{ route('admin.dashboard') }}" class="transition hover:text-gray-700">Home</a>
         <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-        <span class="font-medium text-gray-900">Product Categories</span>
+        <span class="font-medium text-gray-900">Kategori Produk</span>
     </nav>
 
     @include('partials.flash')
 
     <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
         <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-            <h2 class="text-xl font-bold text-gray-900">Product Categories</h2>
+            <h2 class="text-xl font-bold text-gray-900">Kategori Produk</h2>
             <div class="flex items-center gap-3">
                 <form method="GET" class="relative">
                     <svg class="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Search..." class="h-10 w-56 rounded-xl border border-gray-200 bg-gray-50 pl-10 pr-4 text-sm text-gray-700 placeholder-gray-400 transition focus:border-red-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-400/20">
                 </form>
-                <button @click="openCreate()" class="inline-flex h-10 items-center gap-2 rounded-xl bg-green-500 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-green-600 active:scale-[0.98]">
+                <button @click="openCreate()" class="inline-flex h-10 items-center gap-2 rounded-xl bg-red-500 px-5 text-sm font-semibold text-white shadow-sm transition hover:bg-red-600 active:scale-[0.98]">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                    Add New Category
+                    Tambah Kategori
                 </button>
             </div>
         </div>
@@ -32,7 +32,7 @@
                 <thead>
                     <tr class="bg-gray-50">
                         <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500 w-16">No.</th>
-                        <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Category Name</th>
+                        <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Nama Kategori</th>
                         <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500 w-28"></th>
                     </tr>
                 </thead>
@@ -43,7 +43,7 @@
                         <td class="px-5 py-4 font-medium text-gray-900">{{ $category->nama }}</td>
                         <td class="px-5 py-4">
                             <div class="flex items-center justify-end gap-2">
-                                <button @click="openEdit({{ $category->id }})" class="flex h-8 w-8 items-center justify-center rounded-lg bg-green-500 text-white shadow-sm transition hover:bg-green-600">
+                                <button @click="openEdit({{ $category->id }})" class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500 text-white shadow-sm transition hover:bg-red-600">
                                     <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
                                 </button>
                                 <button @click="destroy({{ $category->id }})" class="flex h-8 w-8 items-center justify-center rounded-lg bg-red-500 text-white shadow-sm transition hover:bg-red-600">
@@ -72,7 +72,7 @@
                 <h3 class="text-lg font-bold text-gray-900" x-text="isEdit ? 'Edit Kategori' : 'Tambah Kategori Baru'"></h3>
                 <div class="mt-6 space-y-4">
                     <div>
-                        <label class="mb-1.5 block text-sm font-medium text-gray-700">Category Name</label>
+                        <label class="mb-1.5 block text-sm font-medium text-gray-700">Nama Kategori</label>
                         <input type="text" x-model="form.nama" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/20" :class="errors.nama && 'border-red-400'">
                         <template x-if="errors.nama"><p class="mt-1 text-xs text-red-500" x-text="errors.nama[0]"></p></template>
                     </div>

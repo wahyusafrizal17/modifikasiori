@@ -42,6 +42,20 @@ class User extends Authenticatable
         return $this->role === 'Admin';
     }
 
+    public function activeWarehouseId(): ?int
+    {
+        if ($this->isAdmin() && session()->has('active_warehouse_id')) {
+            return (int) session('active_warehouse_id');
+        }
+
+        return $this->warehouse_id;
+    }
+
+    public function activeWarehouse(): ?Warehouse
+    {
+        return Warehouse::find($this->activeWarehouseId());
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

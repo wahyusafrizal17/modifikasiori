@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ProductsExport;
+use App\Exports\ProductsTemplateExport;
+use App\Imports\ProductsImport;
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
-use App\Models\StockMovement;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with('category')->forUser();
+        $query = Product::with(['category', 'brand'])->forUser();
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -26,10 +29,15 @@ class ProductController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
+        if ($request->filled('brand_id')) {
+            $query->where('brand_id', $request->brand_id);
+        }
+
         $products = $query->latest()->paginate(20)->withQueryString();
         $categories = Category::forUser()->orderBy('nama')->get();
+        $brands = Brand::forUser()->orderBy('nama')->get();
 
-        return view('admin.products.index', compact('products', 'categories'));
+        return view('admin.products.index', compact('products', 'categories', 'brands'));
     }
 
     public function store(Request $request)
@@ -38,12 +46,13 @@ class ProductController extends Controller
             'kode_produk' => ['required', 'string', 'max:50', 'unique:products'],
             'nama_produk' => ['required', 'string', 'max:255'],
             'category_id' => ['required', 'exists:categories,id'],
+            'brand_id' => ['nullable', 'exists:brands,id'],
             'harga_pembelian' => ['required', 'numeric', 'min:0'],
             'harga_jual' => ['required', 'numeric', 'min:0'],
         ]);
 
         $validated['jumlah'] = 0;
-        $validated['warehouse_id'] = auth()->user()->warehouse_id;
+        $validated['warehouse_id'] = auth()->user()->activeWarehouseId();
         Product::create($validated);
         session()->flash('success', 'Produk berhasil ditambahkan.');
 
@@ -61,6 +70,7 @@ class ProductController extends Controller
             'kode_produk' => ['required', 'string', 'max:50', 'unique:products,kode_produk,' . $product->id],
             'nama_produk' => ['required', 'string', 'max:255'],
             'category_id' => ['required', 'exists:categories,id'],
+            'brand_id' => ['nullable', 'exists:brands,id'],
             'harga_pembelian' => ['required', 'numeric', 'min:0'],
             'harga_jual' => ['required', 'numeric', 'min:0'],
         ]);
@@ -79,30 +89,6 @@ class ProductController extends Controller
         return response()->json(['success' => true]);
     }
 
-    public function stockIn(Request $request, Product $product)
-    {
-        $validated = $request->validate([
-            'qty' => ['required', 'integer', 'min:1'],
-            'keterangan' => ['nullable', 'string', 'max:255'],
-        ]);
-
-        DB::transaction(function () use ($validated, $product) {
-            $product->increment('jumlah', $validated['qty']);
-
-            StockMovement::create([
-                'product_id' => $product->id,
-                'type' => 'masuk',
-                'qty' => $validated['qty'],
-                'keterangan' => $validated['keterangan'] ?? 'Stok masuk manual',
-                'reference' => null,
-            ]);
-        });
-
-        session()->flash('success', "Stok masuk {$validated['qty']} unit berhasil.");
-
-        return response()->json(['success' => true]);
-    }
-
     public function stockHistory(Product $product)
     {
         $movements = $product->stockMovements()
@@ -114,5 +100,38 @@ class ProductController extends Controller
             'product' => $product->only(['id', 'kode_produk', 'nama_produk', 'jumlah']),
             'movements' => $movements,
         ]);
+    }
+
+    public function export()
+    {
+        return Excel::download(new ProductsExport, 'products-' . now()->format('Y-m-d-His') . '.xlsx');
+    }
+
+    public function template()
+    {
+        return Excel::download(new ProductsTemplateExport, 'template-products.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls', 'max:5120'],
+        ]);
+
+        try {
+            Excel::import(new ProductsImport, $request->file('file'));
+            session()->flash('success', 'Import produk berhasil.');
+        } catch (\Maatwebsite\Excel\Validators\ValidationException $e) {
+            $failures = $e->failures();
+            $messages = [];
+            foreach ($failures as $failure) {
+                $messages[] = 'Baris ' . $failure->row() . ': ' . implode(', ', $failure->errors());
+            }
+            return back()->with('error', implode(' ', $messages));
+        } catch (\Throwable $e) {
+            return back()->with('error', 'Import gagal: ' . $e->getMessage());
+        }
+
+        return redirect()->route('admin.products.index');
     }
 }

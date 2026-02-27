@@ -26,7 +26,7 @@ class CategoryController extends Controller
             'nama' => ['required', 'string', 'max:255', 'unique:categories'],
         ]);
 
-        $validated['warehouse_id'] = auth()->user()->warehouse_id;
+        $validated['warehouse_id'] = auth()->user()->activeWarehouseId();
         Category::create($validated);
         session()->flash('success', 'Kategori berhasil ditambahkan.');
 

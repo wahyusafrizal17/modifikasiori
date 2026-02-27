@@ -24,8 +24,8 @@ class Category extends Model
     public function scopeForUser($query, $user = null)
     {
         $user ??= auth()->user();
-        if ($user && !$user->isAdmin()) {
-            $query->where('warehouse_id', $user->warehouse_id);
+        if ($user) {
+            $query->where('warehouse_id', $user->activeWarehouseId());
         }
         return $query;
     }

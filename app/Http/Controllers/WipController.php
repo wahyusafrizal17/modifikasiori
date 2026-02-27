@@ -15,7 +15,7 @@ class WipController extends Controller
         $query = Wip::with('product');
 
         if (!auth()->user()->isAdmin()) {
-            $query->whereHas('product', fn ($q) => $q->where('warehouse_id', auth()->user()->warehouse_id));
+            $query->whereHas('product', fn ($q) => $q->where('warehouse_id', auth()->user()->activeWarehouseId()));
         }
 
         if ($request->filled('search')) {

@@ -2,10 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Brand;
 use App\Models\Category;
 use App\Models\JasaServis;
 use App\Models\Kota;
-use App\Models\Product;
+use App\Models\Supplier;
 use App\Models\Warehouse;
 use Illuminate\Database\Seeder;
 
@@ -38,49 +39,16 @@ class MasterDataSeeder extends Seeder
             ]);
         }
 
-        $whBahanBaku = $warehouses['01-BAHAN BAKU-KTP'];
+        $categoryNames = ['Sparepart', 'Oli'];
+        $brandNames = ['Modifikasi Ori', 'Speed Shop', 'Honda', 'Yamaha', 'Kawasaki'];
 
-        $categories = collect([
-            '4.1 CH-MANGKOK GANDA CUSTOM',
-            '4.2 FC-RUMAH ROLLER',
-            '4.3 FD-KIPAS PULLEY',
-            '4.4 FC-FD (SET PULLEY)',
-            '4.5 RMP- RAMPLATE',
-            '4.6 DAYTONA',
-            '4.7 BRT',
-            '4.8 TDR',
-            '4.9 GATES',
-            '4.10 DR PULLEY',
-            '4.11 PROPER',
-            '4.12 RX7',
-            '4.13 ARUMI',
-            '4.14 RCB',
-            '4.15 UMA RACING',
-            '4.16 HGP',
-            '4.17 YGP',
-            '4.18 PLATINUM',
-        ])->map(fn ($nama) => Category::updateOrCreate(
-            ['nama' => $nama],
-            ['warehouse_id' => $whBahanBaku->id]
-        ));
-
-        $catCustom = $categories->first();
-
-        $products = [
-            ['kode_produk' => 'CH-K16-M1', 'nama_produk' => 'CUSTOM LUBANG-MANGKOK GANDA CUSTOM', 'category_id' => $catCustom->id, 'jumlah' => 0, 'harga_pembelian' => 93375, 'harga_jual' => 210000, 'warehouse_id' => $whBahanBaku->id],
-            ['kode_produk' => 'CH-KVV-M1', 'nama_produk' => 'CUSTOM LUBANG-MANGKOK GANDA CUSTOM', 'category_id' => $catCustom->id, 'jumlah' => 0, 'harga_pembelian' => 90250, 'harga_jual' => 210000, 'warehouse_id' => $whBahanBaku->id],
-            ['kode_produk' => 'CH-KVB-M1', 'nama_produk' => 'CUSTOM LUBANG-MANGKOK GANDA CUSTOM', 'category_id' => $catCustom->id, 'jumlah' => 0, 'harga_pembelian' => 119000, 'harga_jual' => 240000, 'warehouse_id' => $whBahanBaku->id],
-            ['kode_produk' => 'CH-K16-M2', 'nama_produk' => 'CUSTOM NEW-MANGKOK GANDA', 'category_id' => $catCustom->id, 'jumlah' => 0, 'harga_pembelian' => 93375, 'harga_jual' => 190000, 'warehouse_id' => $whBahanBaku->id],
-            ['kode_produk' => 'CH-KVV-M2', 'nama_produk' => 'CUSTOM NEW-MANGKOK GANDA', 'category_id' => $catCustom->id, 'jumlah' => 0, 'harga_pembelian' => 90250, 'harga_jual' => 190000, 'warehouse_id' => $whBahanBaku->id],
-            ['kode_produk' => 'CH-KVB-M2', 'nama_produk' => 'CUSTOM NEW-MANGKOK GANDA', 'category_id' => $catCustom->id, 'jumlah' => 0, 'harga_pembelian' => 100250, 'harga_jual' => 200000, 'warehouse_id' => $whBahanBaku->id],
+        $supplierData = [
+            ['nama' => 'PT Sumber Jaya Motor', 'no_hp' => '08111222333', 'alamat' => 'Jl. Industri No. 10, Bandung', 'kota' => 'BANDUNG'],
+            ['nama' => 'CV Mitra Sparepart', 'no_hp' => '08222333444', 'alamat' => 'Jl. Otista No. 25, Jakarta', 'kota' => 'JAKARTA'],
+            ['nama' => 'UD Berkah Oli', 'no_hp' => '08333444555', 'alamat' => 'Jl. Raya Depok No. 5', 'kota' => 'DEPOK'],
+            ['nama' => 'Toko Bearing Jaya', 'no_hp' => '08444555666', 'alamat' => 'Jl. Soekarno Hatta No. 88, Bandung', 'kota' => 'BANDUNG'],
+            ['nama' => 'CV Abadi Motor Parts', 'no_hp' => '08555666777', 'alamat' => 'Jl. Pajajaran No. 12, Bogor', 'kota' => 'BOGOR'],
         ];
-
-        foreach ($products as $p) {
-            Product::updateOrCreate(
-                ['kode_produk' => $p['kode_produk']],
-                $p
-            );
-        }
 
         $jasaServisList = [
             ['nama' => 'BENERIN TALI GAS', 'biaya' => 30000],
@@ -103,11 +71,45 @@ class MasterDataSeeder extends Seeder
             ['nama' => 'FULL SERVICE', 'biaya' => 175000],
         ];
 
-        foreach ($jasaServisList as $js) {
-            JasaServis::updateOrCreate(
-                ['nama' => $js['nama']],
-                array_merge($js, ['warehouse_id' => $whBahanBaku->id])
-            );
+        foreach ($warehouses as $warehouse) {
+            foreach ($categoryNames as $nama) {
+                Category::updateOrCreate(
+                    ['nama' => $nama, 'warehouse_id' => $warehouse->id],
+                    ['nama' => $nama, 'warehouse_id' => $warehouse->id]
+                );
+            }
+
+            foreach ($brandNames as $nama) {
+                Brand::updateOrCreate(
+                    ['nama' => $nama, 'warehouse_id' => $warehouse->id],
+                    ['nama' => $nama, 'warehouse_id' => $warehouse->id]
+                );
+            }
+
+            foreach ($supplierData as $s) {
+                $kotaModel = Kota::where('nama', $s['kota'])->first();
+                Supplier::updateOrCreate(
+                    ['nama' => $s['nama'], 'warehouse_id' => $warehouse->id],
+                    [
+                        'no_hp' => $s['no_hp'],
+                        'alamat' => $s['alamat'],
+                        'kota_id' => $kotaModel?->id,
+                        'warehouse_id' => $warehouse->id,
+                    ]
+                );
+            }
+
+            foreach ($jasaServisList as $js) {
+                JasaServis::updateOrCreate(
+                    ['nama' => $js['nama'], 'warehouse_id' => $warehouse->id],
+                    array_merge($js, ['warehouse_id' => $warehouse->id])
+                );
+            }
+
+            $this->command->info("Seeded master data for: {$warehouse->nama}");
         }
+
+        $whCount = count($warehouses);
+        $this->command->info("Master data seeded: {$whCount} warehouses x (" . count($categoryNames) . " categories, " . count($brandNames) . " brands, " . count($supplierData) . " suppliers, " . count($jasaServisList) . " jasa servis)");
     }
 }
