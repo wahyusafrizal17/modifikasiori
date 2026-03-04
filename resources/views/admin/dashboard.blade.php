@@ -10,144 +10,120 @@
         <span class="font-medium text-gray-900">Dashboard</span>
     </nav>
 
-    {{-- Bengkel Stats --}}
-    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Servis Hari Ini</p>
-                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ number_format($servisHariIni) }}</p>
-                </div>
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-500">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Pendapatan Hari Ini</p>
-                    <p class="mt-2 text-3xl font-bold text-gray-900">Rp {{ number_format($pendapatanHariIni, 0, ',', '.') }}</p>
-                </div>
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-50 text-green-500">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Sedang Proses</p>
-                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ number_format($servisDalamProses) }}</p>
-                </div>
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-500">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.066 2.573c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.573 1.066c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.066-2.573c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                </div>
-            </div>
-        </div>
-
-        <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Antrian</p>
-                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ number_format($servisAntri) }}</p>
-                </div>
-                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-500">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                </div>
-            </div>
-        </div>
+    <div>
+        <h1 class="text-2xl font-bold text-gray-900">Dashboard Super Admin</h1>
+        <p class="mt-1 text-sm text-gray-500">Kelola seluruh master data aplikasi ModifikasiOri.</p>
     </div>
 
-    {{-- Charts Row --}}
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
-        <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm lg:col-span-2">
-            <h2 class="text-lg font-bold text-gray-900">Stok Produk</h2>
-            <p class="mt-1 text-xs text-gray-400">15 produk dengan stok terbanyak</p>
-            <div class="mt-6" style="height: 300px;">
-                <canvas id="stockByCategoryChart"></canvas>
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <a href="{{ route('admin.products.index') }}" class="group rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition hover:shadow-md">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Total Produk</p>
+                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ number_format($totalProduk) }}</p>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50 text-red-500 transition group-hover:bg-red-500 group-hover:text-white">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
+                </div>
             </div>
-        </div>
+        </a>
 
-        <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-            <h2 class="text-lg font-bold text-gray-900">Stok Terendah</h2>
-            <p class="mt-1 text-xs text-gray-400">10 produk dengan stok paling sedikit</p>
-            <div class="mt-6" style="height: 300px;">
-                <canvas id="topProductsChart"></canvas>
+        <a href="{{ route('admin.users.index') }}" class="group rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition hover:shadow-md">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Total Users</p>
+                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ number_format($totalUsers) }}</p>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-500 transition group-hover:bg-blue-500 group-hover:text-white">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+                </div>
             </div>
-        </div>
+        </a>
+
+        <a href="{{ route('admin.warehouses.index') }}" class="group rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition hover:shadow-md">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Total Warehouse</p>
+                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ number_format($totalWarehouses) }}</p>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-500 transition group-hover:bg-emerald-500 group-hover:text-white">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 14v3m4-3v3m4-3v3M3 21h18M3 10h18M3 7l9-4 9 4M4 10h16v11H4V10z"/></svg>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ route('admin.suppliers.index') }}" class="group rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition hover:shadow-md">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Total Supplier</p>
+                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ number_format($totalSuppliers) }}</p>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-500 transition group-hover:bg-amber-500 group-hover:text-white">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ route('admin.categories.index') }}" class="group rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition hover:shadow-md">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Total Kategori</p>
+                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ number_format($totalCategories) }}</p>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-violet-50 text-violet-500 transition group-hover:bg-violet-500 group-hover:text-white">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
+                </div>
+            </div>
+        </a>
+
+        <a href="{{ route('admin.brands.index') }}" class="group rounded-xl border border-gray-100 bg-white p-6 shadow-sm transition hover:shadow-md">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs font-semibold uppercase tracking-wide text-gray-400">Total Brand</p>
+                    <p class="mt-2 text-3xl font-bold text-gray-900">{{ number_format($totalBrands) }}</p>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-pink-50 text-pink-500 transition group-hover:bg-pink-500 group-hover:text-white">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/></svg>
+                </div>
+            </div>
+        </a>
     </div>
 
-    {{-- Low Stock --}}
     <div class="rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-        <div class="flex items-center justify-between">
-            <div>
-                <h2 class="text-lg font-bold text-gray-900">Produk Stok Rendah</h2>
-                <p class="mt-1 text-xs text-gray-400">Produk dengan stok &le; 5 unit yang perlu restock</p>
-            </div>
-            <a href="{{ route('admin.products.index') }}" class="text-sm font-medium text-red-500 transition hover:text-red-600">Lihat Semua &rarr;</a>
-        </div>
-        <div class="mt-6 overflow-x-auto rounded-xl border border-gray-100">
-            <table class="w-full text-left text-sm">
-                <thead><tr class="bg-gray-50">
-                    <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Kode</th>
-                    <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Produk</th>
-                    <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Kategori</th>
-                    <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500 text-center">Stok</th>
-                    <th class="px-5 py-3.5 text-right text-xs font-bold uppercase tracking-wider text-gray-500">Harga Jual</th>
-                </tr></thead>
-                <tbody class="divide-y divide-gray-100">
-                    @forelse($lowStockProducts as $product)
-                    <tr class="transition hover:bg-gray-50">
-                        <td class="px-5 py-4 font-medium text-gray-900">{{ $product->kode_produk }}</td>
-                        <td class="px-5 py-4 text-gray-700">{{ $product->nama_produk }}</td>
-                        <td class="px-5 py-4 text-gray-600">{{ $product->category->nama ?? '-' }}</td>
-                        <td class="px-5 py-4 text-center"><span class="inline-flex items-center rounded-lg {{ $product->jumlah == 0 ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700' }} px-2.5 py-1 text-xs font-semibold">{{ $product->jumlah }}</span></td>
-                        <td class="px-5 py-4 text-right text-gray-700">Rp {{ number_format($product->harga_jual, 0, ',', '.') }}</td>
-                    </tr>
-                    @empty
-                    <tr><td colspan="5" class="px-5 py-12 text-center text-gray-400">Semua produk memiliki stok cukup.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
+        <h2 class="text-lg font-bold text-gray-900">Distribusi Master Data</h2>
+        <p class="mt-1 text-xs text-gray-400">Jumlah per kategori</p>
+        <div class="mt-4 flex h-80 items-center justify-center">
+            <canvas id="chartAdminMaster" class="max-h-72"></canvas>
         </div>
     </div>
 </div>
 @endsection
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const colors = ['#ef4444','#3b82f6','#22c55e','#f59e0b','#8b5cf6','#ec4899','#14b8a6','#f97316','#6366f1','#06b6d4','#84cc16','#e11d48','#0891b2','#a855f7','#10b981'];
-
-    // Stock by Product (vertical)
-    const productStockLabels = @json($stockProducts->pluck('kode_produk'));
-    const productStockData = @json($stockProducts->pluck('jumlah'));
-
-    new Chart(document.getElementById('stockByCategoryChart'), {
-        type: 'bar',
-        data: {
-            labels: productStockLabels,
-            datasets: [{ label: 'Stok', data: productStockData, backgroundColor: colors.slice(0, productStockLabels.length), borderRadius: 6, barPercentage: 0.7 }]
-        },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true }, x: { ticks: { maxRotation: 45, minRotation: 45, font: { size: 10 } } } } }
-    });
-
-    // Low Stock Products
-    const productLabels = @json($lowStockProducts->pluck('nama_produk'));
-    const productData = @json($lowStockProducts->pluck('jumlah'));
-
-    new Chart(document.getElementById('topProductsChart'), {
+(function () {
+    const labels = @json($chartLabels);
+    const data = @json($chartData);
+    new Chart(document.getElementById('chartAdminMaster'), {
         type: 'doughnut',
         data: {
-            labels: productLabels,
-            datasets: [{ data: productData, backgroundColor: colors.slice(0, productLabels.length), borderWidth: 0 }]
+            labels: labels,
+            datasets: [{
+                data: data,
+                backgroundColor: [
+                    'rgb(239, 68, 68)', 'rgb(59, 130, 246)', 'rgb(16, 185, 129)',
+                    'rgb(245, 158, 11)', 'rgb(139, 92, 246)', 'rgb(236, 72, 153)'
+                ],
+                borderWidth: 1
+            }]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { boxWidth: 10, padding: 8, font: { size: 10 } } } } }
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: { legend: { position: 'right' } }
+        }
     });
-});
+})();
 </script>
 @endpush

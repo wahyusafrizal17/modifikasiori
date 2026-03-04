@@ -34,24 +34,50 @@ class ProductController extends Controller
         }
 
         $products = $query->latest()->paginate(20)->withQueryString();
-        $categories = Category::forUser()->orderBy('nama')->get();
-        $brands = Brand::forUser()->orderBy('nama')->get();
+        $categories = Category::orderBy('nama')->get();
+        $brands = Brand::orderBy('nama')->get();
 
-        return view('admin.products.index', compact('products', 'categories', 'brands'));
+        $section = $this->detectSection();
+        $routePrefix = $section . '.products';
+
+        return view("{$section}.products.index", compact('products', 'categories', 'brands', 'routePrefix'));
+    }
+
+    private function detectSection(): string
+    {
+        $name = request()->route()->getName() ?? '';
+        if (str_starts_with($name, 'warehouse.')) return 'warehouse';
+        if (str_starts_with($name, 'speedshop.')) return 'speedshop';
+        return 'admin';
+    }
+
+    private function isWarehouseSection(): bool
+    {
+        return str_starts_with(request()->route()->getName() ?? '', 'warehouse.');
     }
 
     public function store(Request $request)
     {
+        if ($this->isWarehouseSection()) {
+            abort(403, 'Warehouse tidak dapat menambah produk. Hanya Admin yang dapat mengelola data produk.');
+        }
+
         $validated = $request->validate([
             'kode_produk' => ['required', 'string', 'max:50', 'unique:products'],
             'nama_produk' => ['required', 'string', 'max:255'],
             'category_id' => ['required', 'exists:categories,id'],
             'brand_id' => ['nullable', 'exists:brands,id'],
-            'harga_pembelian' => ['required', 'numeric', 'min:0'],
-            'harga_jual' => ['required', 'numeric', 'min:0'],
+            'hpp' => ['nullable', 'numeric', 'min:0'],
+            'harga_jual_speedshop' => ['nullable', 'numeric', 'min:0'],
+            'harga_jual_reseler' => ['nullable', 'numeric', 'min:0'],
+            'harga_eceran_terendah' => ['nullable', 'numeric', 'min:0'],
         ]);
 
         $validated['jumlah'] = 0;
+        $validated['hpp'] = (float) ($validated['hpp'] ?? 0);
+        $validated['harga_jual_speedshop'] = (float) ($validated['harga_jual_speedshop'] ?? 0);
+        $validated['harga_jual_reseler'] = (float) ($validated['harga_jual_reseler'] ?? 0);
+        $validated['harga_eceran_terendah'] = (float) ($validated['harga_eceran_terendah'] ?? 0);
         $validated['warehouse_id'] = auth()->user()->activeWarehouseId();
         Product::create($validated);
         session()->flash('success', 'Produk berhasil ditambahkan.');
@@ -61,20 +87,34 @@ class ProductController extends Controller
 
     public function show(Product $product)
     {
+        if ($this->isWarehouseSection()) {
+            abort(403, 'Warehouse hanya dapat melihat daftar produk dan stok.');
+        }
+
         return response()->json($product);
     }
 
     public function update(Request $request, Product $product)
     {
+        if ($this->isWarehouseSection()) {
+            abort(403, 'Warehouse tidak dapat mengubah produk. Hanya Admin yang dapat mengelola data produk.');
+        }
+
         $validated = $request->validate([
             'kode_produk' => ['required', 'string', 'max:50', 'unique:products,kode_produk,' . $product->id],
             'nama_produk' => ['required', 'string', 'max:255'],
             'category_id' => ['required', 'exists:categories,id'],
             'brand_id' => ['nullable', 'exists:brands,id'],
-            'harga_pembelian' => ['required', 'numeric', 'min:0'],
-            'harga_jual' => ['required', 'numeric', 'min:0'],
+            'hpp' => ['nullable', 'numeric', 'min:0'],
+            'harga_jual_speedshop' => ['nullable', 'numeric', 'min:0'],
+            'harga_jual_reseler' => ['nullable', 'numeric', 'min:0'],
+            'harga_eceran_terendah' => ['nullable', 'numeric', 'min:0'],
         ]);
 
+        $validated['hpp'] = (float) ($validated['hpp'] ?? 0);
+        $validated['harga_jual_speedshop'] = (float) ($validated['harga_jual_speedshop'] ?? 0);
+        $validated['harga_jual_reseler'] = (float) ($validated['harga_jual_reseler'] ?? 0);
+        $validated['harga_eceran_terendah'] = (float) ($validated['harga_eceran_terendah'] ?? 0);
         $product->update($validated);
         session()->flash('success', 'Produk berhasil diperbarui.');
 
@@ -83,14 +123,49 @@ class ProductController extends Controller
 
     public function destroy(Product $product)
     {
+        if ($this->isWarehouseSection()) {
+            abort(403, 'Warehouse tidak dapat menghapus produk. Hanya Admin yang dapat mengelola data produk.');
+        }
+
         $product->delete();
         session()->flash('success', 'Produk berhasil dihapus.');
 
         return response()->json(['success' => true]);
     }
 
+    public function updatePrices(Request $request, Product $product)
+    {
+        if (! $this->isWarehouseSection()) {
+            abort(403, 'Hanya warehouse yang dapat mengupdate harga produk.');
+        }
+
+        $warehouseId = auth()->user()->activeWarehouseId();
+        if ($warehouseId !== null && $product->warehouse_id !== $warehouseId) {
+            abort(403, 'Anda tidak memiliki akses ke produk ini.');
+        }
+
+        $validated = $request->validate([
+            'hpp' => ['required', 'numeric', 'min:0'],
+            'harga_jual_speedshop' => ['required', 'numeric', 'min:0'],
+            'harga_jual_reseler' => ['required', 'numeric', 'min:0'],
+            'harga_eceran_terendah' => ['required', 'numeric', 'min:0'],
+        ]);
+
+        $product->update($validated);
+        session()->flash('success', 'Harga produk berhasil diperbarui.');
+
+        return response()->json(['success' => true]);
+    }
+
     public function stockHistory(Product $product)
     {
+        if ($this->isWarehouseSection()) {
+            $warehouseId = auth()->user()->activeWarehouseId();
+            if ($warehouseId !== null && $product->warehouse_id !== $warehouseId) {
+                abort(403, 'Anda tidak memiliki akses ke produk ini.');
+            }
+        }
+
         $movements = $product->stockMovements()
             ->latest()
             ->limit(50)

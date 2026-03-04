@@ -10,19 +10,10 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class ProductsImport implements ToModel, WithHeadingRow
 {
-    protected int $warehouseId;
-
-    public function __construct()
-    {
-        $this->warehouseId = auth()->user()->warehouse_id;
-    }
-
     public function model(array $row): ?Product
     {
         $categoryName = trim($row['kategori'] ?? '');
-        $category = Category::forUser()
-            ->where('nama', $categoryName)
-            ->first();
+        $category = Category::where('nama', $categoryName)->first();
 
         if (!$category) {
             return null;
@@ -39,7 +30,7 @@ class ProductsImport implements ToModel, WithHeadingRow
         }
 
         $brandName = trim($row['brand'] ?? '');
-        $brand = $brandName ? Brand::forUser()->where('nama', $brandName)->first() : null;
+        $brand = $brandName ? Brand::where('nama', $brandName)->first() : null;
 
         return new Product([
             'kode_produk' => $kodeProduk,
@@ -49,7 +40,11 @@ class ProductsImport implements ToModel, WithHeadingRow
             'jumlah' => (int) ($row['stok'] ?? 0),
             'harga_pembelian' => (float) ($row['harga_pembelian'] ?? $row['harga_pembelian_rp'] ?? 0),
             'harga_jual' => (float) ($row['harga_jual'] ?? $row['harga_jual_rp'] ?? 0),
-            'warehouse_id' => $this->warehouseId,
+            'hpp' => 0,
+            'harga_jual_speedshop' => 0,
+            'harga_jual_reseler' => 0,
+            'harga_eceran_terendah' => 0,
+            'warehouse_id' => auth()->user()->activeWarehouseId(),
         ]);
     }
 }

@@ -11,7 +11,7 @@ class JasaServisExport implements FromQuery, WithHeadings, WithMapping
 {
     public function query()
     {
-        return JasaServis::forUser()->orderBy('nama');
+        return JasaServis::query()->orderBy('nama');
     }
 
     public function headings(): array

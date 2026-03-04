@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Dashboard') - Admin Panel</title>
+    <link rel="icon" href="{{ asset('images/logo.png') }}" type="image/png">
+    <title>@yield('title', 'Dashboard') - {{ config('app.name') }}</title>
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:300,400,500,600,700,800" rel="stylesheet" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -28,11 +29,18 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
-<body class="min-h-screen bg-gray-100 antialiased" style="font-family: 'Inter', sans-serif;">
-    <div class="flex min-h-screen">
-        @include('partials.sidebar')
-
-        <div class="flex flex-1 flex-col">
+<body class="h-screen overflow-hidden bg-gray-100 antialiased" style="font-family: 'Inter', sans-serif;">
+    @php
+        $currentSection = session('admin_section', 'admin');
+        if (!in_array($currentSection, ['produksi', 'warehouse', 'speedshop'])) {
+            session(['admin_section' => 'admin']);
+        }
+    @endphp
+    <div class="flex h-screen overflow-hidden" x-data="{ sidebarOpen: localStorage.getItem('sidebarOpen') !== 'false' }" x-init="$watch('sidebarOpen', v => localStorage.setItem('sidebarOpen', v))">
+        <div class="flex h-screen flex-shrink-0 overflow-hidden transition-all duration-300 ease-in-out" :class="sidebarOpen ? 'w-[250px]' : 'w-0'">
+            @include('partials.sidebar')
+        </div>
+        <div class="flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto">
             @include('partials.navbar')
 
             <main class="flex-1 p-8">

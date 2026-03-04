@@ -2,60 +2,57 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Production extends Model
 {
-    use HasFactory;
-
     protected $fillable = [
-        'kode_produksi', 'warehouse_id', 'tanggal',
-        'status', 'catatan', 'user_id',
+        'kode', 'tanggal', 'team_produksi_id', 'user_id', 'status',
+        'reported_by', 'reported_at', 'catatan',
     ];
 
     protected $casts = [
         'tanggal' => 'date',
+        'reported_at' => 'datetime',
     ];
 
-    public function warehouse()
+    public function teamProduksi(): BelongsTo
     {
-        return $this->belongsTo(Warehouse::class);
+        return $this->belongsTo(TeamProduksi::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function materials()
+    public function reporter(): BelongsTo
     {
-        return $this->hasMany(ProductionMaterial::class);
+        return $this->belongsTo(User::class, 'reported_by');
     }
 
-    public function results()
+    public function outputs(): HasMany
     {
-        return $this->hasMany(ProductionResult::class);
+        return $this->hasMany(ProductionOutput::class);
     }
 
-    public static function generateCode(): string
+    public function isProses(): bool
     {
-        $prefix = 'PRD-' . now()->format('Ymd') . '-';
-        $last = static::where('kode_produksi', 'like', $prefix . '%')
-            ->orderByDesc('kode_produksi')
-            ->value('kode_produksi');
-        $seq = $last ? (int) substr($last, -4) + 1 : 1;
-        return $prefix . str_pad($seq, 4, '0', STR_PAD_LEFT);
+        return $this->status === 'proses';
     }
 
-    public function getStatusBadgeAttribute(): string
+    public function isSelesai(): bool
     {
-        return match ($this->status) {
-            'proses' => '<span class="inline-flex items-center rounded-lg bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-700">Proses</span>',
-            'qc' => '<span class="inline-flex items-center rounded-lg bg-yellow-100 px-2.5 py-1 text-xs font-semibold text-yellow-700">QC</span>',
-            'selesai' => '<span class="inline-flex items-center rounded-lg bg-green-100 px-2.5 py-1 text-xs font-semibold text-green-700">Selesai</span>',
-            'gagal' => '<span class="inline-flex items-center rounded-lg bg-red-100 px-2.5 py-1 text-xs font-semibold text-red-700">Gagal</span>',
-            default => '',
-        };
+        return $this->status === 'selesai';
+    }
+
+    public static function generateKode(): string
+    {
+        $today = now()->format('Ymd');
+        $last = static::where('kode', 'like', "PRD-{$today}-%")->latest('id')->first();
+        $seq = $last ? (int) substr($last->kode, -4) + 1 : 1;
+        return "PRD-{$today}-" . str_pad($seq, 4, '0', STR_PAD_LEFT);
     }
 }

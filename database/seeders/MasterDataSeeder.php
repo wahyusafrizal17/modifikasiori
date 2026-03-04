@@ -28,10 +28,9 @@ class MasterDataSeeder extends Seeder
             ['nama' => '05-SPEED SHOP BOGOR-BGR', 'no_hp' => '081328773881', 'alamat' => 'Jl. Brigjen Saptadji Hadiprawira No.9, RT.01/RW.09', 'kota' => 'BOGOR'],
         ];
 
-        $warehouses = [];
         foreach ($warehouseData as $w) {
             $kotaModel = Kota::where('nama', $w['kota'])->first();
-            $warehouses[$w['nama']] = Warehouse::firstOrCreate(['nama' => $w['nama']], [
+            Warehouse::firstOrCreate(['nama' => $w['nama']], [
                 'nama' => $w['nama'],
                 'no_hp' => $w['no_hp'],
                 'alamat' => $w['alamat'],
@@ -71,45 +70,33 @@ class MasterDataSeeder extends Seeder
             ['nama' => 'FULL SERVICE', 'biaya' => 175000],
         ];
 
-        foreach ($warehouses as $warehouse) {
-            foreach ($categoryNames as $nama) {
-                Category::updateOrCreate(
-                    ['nama' => $nama, 'warehouse_id' => $warehouse->id],
-                    ['nama' => $nama, 'warehouse_id' => $warehouse->id]
-                );
-            }
-
-            foreach ($brandNames as $nama) {
-                Brand::updateOrCreate(
-                    ['nama' => $nama, 'warehouse_id' => $warehouse->id],
-                    ['nama' => $nama, 'warehouse_id' => $warehouse->id]
-                );
-            }
-
-            foreach ($supplierData as $s) {
-                $kotaModel = Kota::where('nama', $s['kota'])->first();
-                Supplier::updateOrCreate(
-                    ['nama' => $s['nama'], 'warehouse_id' => $warehouse->id],
-                    [
-                        'no_hp' => $s['no_hp'],
-                        'alamat' => $s['alamat'],
-                        'kota_id' => $kotaModel?->id,
-                        'warehouse_id' => $warehouse->id,
-                    ]
-                );
-            }
-
-            foreach ($jasaServisList as $js) {
-                JasaServis::updateOrCreate(
-                    ['nama' => $js['nama'], 'warehouse_id' => $warehouse->id],
-                    array_merge($js, ['warehouse_id' => $warehouse->id])
-                );
-            }
-
-            $this->command->info("Seeded master data for: {$warehouse->nama}");
+        foreach ($categoryNames as $nama) {
+            Category::firstOrCreate(['nama' => $nama]);
         }
 
-        $whCount = count($warehouses);
-        $this->command->info("Master data seeded: {$whCount} warehouses x (" . count($categoryNames) . " categories, " . count($brandNames) . " brands, " . count($supplierData) . " suppliers, " . count($jasaServisList) . " jasa servis)");
+        foreach ($brandNames as $nama) {
+            Brand::firstOrCreate(['nama' => $nama]);
+        }
+
+        foreach ($supplierData as $s) {
+            $kotaModel = Kota::where('nama', $s['kota'])->first();
+            Supplier::firstOrCreate(
+                ['nama' => $s['nama']],
+                [
+                    'no_hp' => $s['no_hp'],
+                    'alamat' => $s['alamat'],
+                    'kota_id' => $kotaModel?->id,
+                ]
+            );
+        }
+
+        foreach ($jasaServisList as $js) {
+            JasaServis::firstOrCreate(
+                ['nama' => $js['nama']],
+                $js
+            );
+        }
+
+        $this->command->info("Seeded: " . count($warehouseData) . " warehouses, " . count($categoryNames) . " categories, " . count($brandNames) . " brands, " . count($supplierData) . " suppliers, " . count($jasaServisList) . " jasa servis (global)");
     }
 }

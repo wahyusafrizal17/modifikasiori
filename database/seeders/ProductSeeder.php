@@ -42,10 +42,10 @@ class ProductSeeder extends Seeder
             ['kode_produk' => 'OL-GRB-001', 'nama_produk' => 'OLI GARDAN MATIC 120ML', 'category' => 'Oli', 'brand' => 'Honda', 'harga_pembelian' => 22000, 'harga_jual' => 35000],
         ];
 
-        foreach ($warehouses as $warehouse) {
-            $categories = Category::where('warehouse_id', $warehouse->id)->pluck('id', 'nama');
-            $brands = Brand::where('warehouse_id', $warehouse->id)->pluck('id', 'nama');
+        $categories = Category::pluck('id', 'nama');
+        $brands = Brand::pluck('id', 'nama');
 
+        foreach ($warehouses as $warehouse) {
             foreach ($productTemplates as $p) {
                 Product::updateOrCreate(
                     [

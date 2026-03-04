@@ -10,9 +10,26 @@ class ServiceOrder extends Model
     use HasFactory;
 
     protected $fillable = [
-        'kode_servis', 'pelanggan_id', 'kendaraan_id', 'mekanik_id',
-        'keluhan', 'estimasi_biaya', 'status',
+        'warehouse_id', 'kode_servis', 'pelanggan_id', 'kendaraan_id', 'mekanik_id',
+        'keluhan', 'sumber_kedatangan', 'kategori_service', 'estimasi_biaya', 'status',
         'tanggal_masuk', 'tanggal_selesai', 'next_service_date',
+    ];
+
+    public const SUMBER_KEDATANGAN = [
+        'relasi_teman' => 'Relasi/Teman',
+        'whatsapp' => 'Whatsapp',
+        'facebook' => 'Facebook',
+        'ig' => 'IG',
+        'tiktok' => 'Tiktok',
+        'marketplace' => 'Marketplace',
+        'datang_langsung' => 'Datang Langsung',
+        'dll' => 'DLL',
+    ];
+
+    public const KATEGORI_SERVICE = [
+        'reguler' => 'Reguler',
+        'booking' => 'Booking',
+        'express' => 'Express',
     ];
 
     protected $casts = [
@@ -27,6 +44,11 @@ class ServiceOrder extends Model
         $last = static::where('kode_servis', 'like', "SRV-{$date}-%")->latest('id')->first();
         $seq = $last ? (int) substr($last->kode_servis, -4) + 1 : 1;
         return sprintf('SRV-%s-%04d', $date, $seq);
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
     }
 
     public function pelanggan()

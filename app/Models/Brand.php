@@ -9,24 +9,10 @@ class Brand extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['nama', 'warehouse_id'];
+    protected $fillable = ['nama'];
 
     public function products()
     {
         return $this->hasMany(Product::class);
-    }
-
-    public function warehouse()
-    {
-        return $this->belongsTo(Warehouse::class);
-    }
-
-    public function scopeForUser($query, $user = null)
-    {
-        $user ??= auth()->user();
-        if ($user) {
-            $query->where('warehouse_id', $user->activeWarehouseId());
-        }
-        return $query;
     }
 }

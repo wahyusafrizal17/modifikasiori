@@ -17,6 +17,10 @@ class Product extends Model
         'jumlah',
         'harga_pembelian',
         'harga_jual',
+        'hpp',
+        'harga_jual_speedshop',
+        'harga_jual_reseler',
+        'harga_eceran_terendah',
         'warehouse_id',
     ];
 

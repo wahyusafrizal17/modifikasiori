@@ -8,13 +8,6 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class JasaServisImport implements ToModel, WithHeadingRow
 {
-    protected int $warehouseId;
-
-    public function __construct()
-    {
-        $this->warehouseId = auth()->user()->warehouse_id;
-    }
-
     public function model(array $row): ?JasaServis
     {
         $nama = trim($row['nama_jasa_servis'] ?? $row['nama'] ?? '');
@@ -27,7 +20,6 @@ class JasaServisImport implements ToModel, WithHeadingRow
         return new JasaServis([
             'nama' => $nama,
             'biaya' => $biaya,
-            'warehouse_id' => $this->warehouseId,
         ]);
     }
 }

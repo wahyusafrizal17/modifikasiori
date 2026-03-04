@@ -2,37 +2,44 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Invoice;
+use App\Models\Brand;
+use App\Models\Category;
 use App\Models\Product;
-use App\Models\ServiceOrder;
+use App\Models\Supplier;
+use App\Models\User;
+use App\Models\Warehouse;
 
 class AdminDashboardController extends Controller
 {
     public function index()
     {
-        $today = now()->toDateString();
+        $totalProduk = Product::count();
+        $totalUsers = User::count();
+        $totalWarehouses = Warehouse::count();
+        $totalSuppliers = Supplier::count();
+        $totalCategories = Category::count();
+        $totalBrands = Brand::count();
 
-        $servisHariIni = ServiceOrder::whereDate('tanggal_masuk', $today)->count();
-        $pendapatanHariIni = Invoice::whereDate('tanggal', $today)->sum('grand_total');
-        $servisDalamProses = ServiceOrder::where('status', 'proses')->count();
-        $servisAntri = ServiceOrder::where('status', 'antri')->count();
-
-        $stockProducts = Product::forUser()
-            ->where('jumlah', '>', 0)
-            ->orderByDesc('jumlah')
-            ->limit(15)
-            ->get();
-
-        $lowStockProducts = Product::forUser()
-            ->with('category')
-            ->where('jumlah', '<=', 5)
-            ->orderBy('jumlah')
-            ->limit(10)
-            ->get();
+        // Data chart: distribusi master data (doughnut)
+        $chartLabels = ['Produk', 'Users', 'Warehouse', 'Supplier', 'Kategori', 'Brand'];
+        $chartData = [
+            $totalProduk,
+            $totalUsers,
+            $totalWarehouses,
+            $totalSuppliers,
+            $totalCategories,
+            $totalBrands,
+        ];
 
         return view('admin.dashboard', compact(
-            'servisHariIni', 'pendapatanHariIni', 'servisDalamProses', 'servisAntri',
-            'stockProducts', 'lowStockProducts'
+            'totalProduk',
+            'totalUsers',
+            'totalWarehouses',
+            'totalSuppliers',
+            'totalCategories',
+            'totalBrands',
+            'chartLabels',
+            'chartData',
         ));
     }
 }

@@ -13,7 +13,7 @@ class JasaServisController extends Controller
 {
     public function index(Request $request)
     {
-        $query = JasaServis::forUser();
+        $query = JasaServis::query();
 
         if ($request->filled('search')) {
             $query->where('nama', 'like', "%{$request->search}%");
@@ -31,7 +31,6 @@ class JasaServisController extends Controller
             'biaya' => ['required', 'numeric', 'min:0'],
         ]);
 
-        $validated['warehouse_id'] = auth()->user()->activeWarehouseId();
         JasaServis::create($validated);
         session()->flash('success', 'Jasa servis berhasil ditambahkan.');
 

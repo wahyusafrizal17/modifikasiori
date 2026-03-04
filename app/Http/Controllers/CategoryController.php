@@ -9,7 +9,7 @@ class CategoryController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Category::forUser();
+        $query = Category::query();
 
         if ($request->filled('search')) {
             $query->where('nama', 'like', "%{$request->search}%");
@@ -26,7 +26,6 @@ class CategoryController extends Controller
             'nama' => ['required', 'string', 'max:255', 'unique:categories'],
         ]);
 
-        $validated['warehouse_id'] = auth()->user()->activeWarehouseId();
         Category::create($validated);
         session()->flash('success', 'Kategori berhasil ditambahkan.');
 

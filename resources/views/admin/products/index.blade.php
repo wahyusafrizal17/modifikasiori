@@ -61,8 +61,10 @@
                         <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Kategori</th>
                         <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Brand</th>
                         <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Stok</th>
-                        <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500 text-right">Harga Pembelian (Rp)</th>
-                        <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500 text-right">Harga Jual (Rp)</th>
+                        <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500 text-right">HPP (Rp)</th>
+                        <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500 text-right">Harga Jual Speedshop (Rp)</th>
+                        <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500 text-right">Harga Jual Reseler (Rp)</th>
+                        <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500 text-right">Harga Eceran Terendah (Rp)</th>
                         <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500"></th>
                     </tr>
                 </thead>
@@ -77,8 +79,10 @@
                         <td class="px-5 py-4 text-center">
                             <span class="inline-flex items-center rounded-lg {{ $product->jumlah > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700' }} px-2.5 py-1 text-xs font-semibold">{{ number_format($product->jumlah) }}</span>
                         </td>
-                        <td class="px-5 py-4 text-right text-gray-700">{{ number_format($product->harga_pembelian, 0, ',', '.') }}</td>
-                        <td class="px-5 py-4 text-right text-gray-700">{{ number_format($product->harga_jual, 0, ',', '.') }}</td>
+                        <td class="px-5 py-4 text-right text-gray-700">{{ number_format($product->hpp ?? 0, 0, ',', '.') }}</td>
+                        <td class="px-5 py-4 text-right text-gray-700">{{ number_format($product->harga_jual_speedshop ?? 0, 0, ',', '.') }}</td>
+                        <td class="px-5 py-4 text-right text-gray-700">{{ number_format($product->harga_jual_reseler ?? 0, 0, ',', '.') }}</td>
+                        <td class="px-5 py-4 text-right text-gray-700">{{ number_format($product->harga_eceran_terendah ?? 0, 0, ',', '.') }}</td>
                         <td class="px-5 py-4">
                             <div class="flex items-center justify-end gap-2">
                                 <button @click="openHistory({{ $product->id }})" class="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-500 text-white shadow-sm transition hover:bg-gray-600" title="History">
@@ -97,7 +101,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="9" class="px-5 py-12 text-center text-gray-400">Belum ada data produk.</td></tr>
+                    <tr><td colspan="11" class="px-5 py-12 text-center text-gray-400">Belum ada data produk.</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -149,14 +153,24 @@
                     </div>
                     <div class="grid grid-cols-2 gap-4">
                         <div>
-                            <label class="mb-1.5 block text-sm font-medium text-gray-700">Harga Pembelian (Rp)</label>
-                            <input type="number" x-model="form.harga_pembelian" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/20" :class="errors.harga_pembelian && 'border-red-400'">
-                            <template x-if="errors.harga_pembelian"><p class="mt-1 text-xs text-red-500" x-text="errors.harga_pembelian[0]"></p></template>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700">HPP (Rp)</label>
+                            <input type="number" x-model="form.hpp" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/20" :class="errors.hpp && 'border-red-400'">
+                            <template x-if="errors.hpp"><p class="mt-1 text-xs text-red-500" x-text="errors.hpp[0]"></p></template>
                         </div>
                         <div>
-                            <label class="mb-1.5 block text-sm font-medium text-gray-700">Harga Jual (Rp)</label>
-                            <input type="number" x-model="form.harga_jual" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/20" :class="errors.harga_jual && 'border-red-400'">
-                            <template x-if="errors.harga_jual"><p class="mt-1 text-xs text-red-500" x-text="errors.harga_jual[0]"></p></template>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700">Harga Jual Speedshop (Rp)</label>
+                            <input type="number" x-model="form.harga_jual_speedshop" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/20" :class="errors.harga_jual_speedshop && 'border-red-400'">
+                            <template x-if="errors.harga_jual_speedshop"><p class="mt-1 text-xs text-red-500" x-text="errors.harga_jual_speedshop[0]"></p></template>
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700">Harga Jual Reseler (Rp)</label>
+                            <input type="number" x-model="form.harga_jual_reseler" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/20" :class="errors.harga_jual_reseler && 'border-red-400'">
+                            <template x-if="errors.harga_jual_reseler"><p class="mt-1 text-xs text-red-500" x-text="errors.harga_jual_reseler[0]"></p></template>
+                        </div>
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700">Harga Eceran Terendah (Rp)</label>
+                            <input type="number" x-model="form.harga_eceran_terendah" min="0" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/20" :class="errors.harga_eceran_terendah && 'border-red-400'">
+                            <template x-if="errors.harga_eceran_terendah"><p class="mt-1 text-xs text-red-500" x-text="errors.harga_eceran_terendah[0]"></p></template>
                         </div>
                     </div>
                 </div>
@@ -276,18 +290,18 @@ function productsCrud() {
         showBarcode: false, barcodeValue: '', labelQty: 1,
         showHistory: false, historyProduct: {}, historyMovements: [],
         showImportModal: false, importFileName: '',
-        form: { kode_produk: '', nama_produk: '', category_id: '', brand_id: '', harga_pembelian: 0, harga_jual: 0 },
+        form: { kode_produk: '', nama_produk: '', category_id: '', brand_id: '', hpp: 0, harga_jual_speedshop: 0, harga_jual_reseler: 0, harga_eceran_terendah: 0 },
 
         openCreate() {
             this.isEdit = false; this.editId = null; this.errors = {};
-            this.form = { kode_produk: '', nama_produk: '', category_id: '', brand_id: '', harga_pembelian: 0, harga_jual: 0 };
+            this.form = { kode_produk: '', nama_produk: '', category_id: '', brand_id: '', hpp: 0, harga_jual_speedshop: 0, harga_jual_reseler: 0, harga_eceran_terendah: 0 };
             this.showModal = true;
         },
         async openEdit(id) {
             this.isEdit = true; this.editId = id; this.errors = {}; this.loading = true; this.showModal = true;
             const res = await fetch(`/admin/products/${id}`, { headers: { 'Accept': 'application/json' } });
             const data = await res.json();
-            this.form = { kode_produk: data.kode_produk, nama_produk: data.nama_produk, category_id: String(data.category_id), brand_id: data.brand_id ? String(data.brand_id) : '', harga_pembelian: data.harga_pembelian, harga_jual: data.harga_jual };
+            this.form = { kode_produk: data.kode_produk, nama_produk: data.nama_produk, category_id: String(data.category_id), brand_id: data.brand_id ? String(data.brand_id) : '', hpp: Number(data.hpp) || 0, harga_jual_speedshop: Number(data.harga_jual_speedshop) || 0, harga_jual_reseler: Number(data.harga_jual_reseler) || 0, harga_eceran_terendah: Number(data.harga_eceran_terendah) || 0 };
             this.loading = false;
         },
         async save() {

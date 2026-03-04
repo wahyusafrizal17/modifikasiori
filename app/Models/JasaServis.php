@@ -11,19 +11,5 @@ class JasaServis extends Model
 
     protected $table = 'jasa_servis';
 
-    protected $fillable = ['nama', 'biaya', 'warehouse_id'];
-
-    public function warehouse()
-    {
-        return $this->belongsTo(Warehouse::class);
-    }
-
-    public function scopeForUser($query, $user = null)
-    {
-        $user ??= auth()->user();
-        if ($user) {
-            $query->where('warehouse_id', $user->activeWarehouseId());
-        }
-        return $query;
-    }
+    protected $fillable = ['nama', 'biaya'];
 }

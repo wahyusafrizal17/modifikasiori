@@ -35,6 +35,8 @@
                         <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Fullname</th>
                         <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Username</th>
                         <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Role</th>
+                        <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Section</th>
+                        <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Warehouse / Speedshop</th>
                         <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500">Kota</th>
                         <th class="px-5 py-3.5 text-xs font-bold uppercase tracking-wider text-gray-500 w-28"></th>
                     </tr>
@@ -48,6 +50,14 @@
                         <td class="px-5 py-4">
                             <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-semibold {{ $user->role === 'Admin' ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700' }}">{{ $user->role }}</span>
                         </td>
+                        <td class="px-5 py-4 text-gray-700">
+                            @if($user->section)
+                                <span class="inline-flex items-center rounded-lg px-2 py-0.5 text-xs font-medium {{ $user->section === 'produksi' ? 'bg-amber-100 text-amber-800' : ($user->section === 'warehouse' ? 'bg-sky-100 text-sky-800' : 'bg-emerald-100 text-emerald-800') }}">{{ ucfirst($user->section) }}</span>
+                            @else
+                                <span class="text-gray-400">-</span>
+                            @endif
+                        </td>
+                        <td class="px-5 py-4 text-gray-700">{{ $user->section === 'speedshop' ? ($user->speedshop->nama ?? '-') : ($user->warehouse->nama ?? '-') }}</td>
                         <td class="px-5 py-4 text-gray-700">{{ $user->kota->nama ?? '-' }}</td>
                         <td class="px-5 py-4">
                             <div class="flex items-center justify-end gap-2">
@@ -63,7 +73,7 @@
                         </td>
                     </tr>
                     @empty
-                    <tr><td colspan="6" class="px-5 py-12 text-center text-gray-400">Belum ada data user.</td></tr>
+                    <tr><td colspan="8" class="px-5 py-12 text-center text-gray-400">Belum ada data user.</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -108,7 +118,8 @@
                         <div>
                             <label class="mb-1.5 block text-sm font-medium text-gray-700">Role</label>
                             <select x-model="form.role" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/20" :class="errors.role && 'border-red-400'">
-                                <option value="User">User</option>
+                                <option value="Staf">Staf</option>
+                                <option value="Manager">Manager</option>
                                 <option value="Admin">Admin</option>
                             </select>
                             <template x-if="errors.role"><p class="mt-1 text-xs text-red-500" x-text="errors.role[0]"></p></template>
@@ -122,6 +133,41 @@
                                 @endforeach
                             </select>
                             <template x-if="errors.kota_id"><p class="mt-1 text-xs text-red-500" x-text="errors.kota_id[0]"></p></template>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700">Section</label>
+                            <select x-model="form.section" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/20" :class="errors.section && 'border-red-400'">
+                                <option value="">Pilih Section</option>
+                                <option value="produksi">Produksi</option>
+                                <option value="warehouse">Warehouse</option>
+                                <option value="speedshop">Speedshop</option>
+                            </select>
+                            <p class="mt-1 text-xs text-gray-500">User untuk modul Produksi, Warehouse, atau Speedshop.</p>
+                            <template x-if="errors.section"><p class="mt-1 text-xs text-red-500" x-text="errors.section[0]"></p></template>
+                        </div>
+                        <div x-show="form.section === 'warehouse'" x-transition>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700">Warehouse</label>
+                            <select x-model="form.warehouse_id" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/20" :class="errors.warehouse_id && 'border-red-400'">
+                                <option value="">Pilih Warehouse</option>
+                                @foreach($warehouses as $wh)
+                                    <option value="{{ $wh->id }}">{{ $wh->nama }}</option>
+                                @endforeach
+                            </select>
+                            <p class="mt-1 text-xs text-gray-500">Cabang Warehouse untuk user ini.</p>
+                            <template x-if="errors.warehouse_id"><p class="mt-1 text-xs text-red-500" x-text="errors.warehouse_id[0]"></p></template>
+                        </div>
+                        <div x-show="form.section === 'speedshop'" x-transition>
+                            <label class="mb-1.5 block text-sm font-medium text-gray-700">Speedshop</label>
+                            <select x-model="form.speedshop_id" class="w-full rounded-xl border border-gray-200 px-4 py-2.5 text-sm transition focus:border-red-400 focus:outline-none focus:ring-2 focus:ring-red-400/20" :class="errors.speedshop_id && 'border-red-400'">
+                                <option value="">Pilih Speedshop</option>
+                                @foreach($speedshops as $ss)
+                                    <option value="{{ $ss->id }}">{{ $ss->nama }}</option>
+                                @endforeach
+                            </select>
+                            <p class="mt-1 text-xs text-gray-500">Cabang Speedshop untuk user ini.</p>
+                            <template x-if="errors.speedshop_id"><p class="mt-1 text-xs text-red-500" x-text="errors.speedshop_id[0]"></p></template>
                         </div>
                     </div>
                 </div>
@@ -143,17 +189,17 @@
 function usersCrud() {
     return {
         showModal: false, isEdit: false, editId: null, loading: false, errors: {},
-        form: { name: '', username: '', email: '', password: '', role: 'User', kota_id: '' },
+        form: { name: '', username: '', email: '', password: '', role: 'Staf', kota_id: '', section: '', warehouse_id: '', speedshop_id: '' },
         openCreate() {
             this.isEdit = false; this.editId = null; this.errors = {};
-            this.form = { name: '', username: '', email: '', password: '', role: 'User', kota_id: '' };
+            this.form = { name: '', username: '', email: '', password: '', role: 'Staf', kota_id: '', section: '', warehouse_id: '', speedshop_id: '' };
             this.showModal = true;
         },
         async openEdit(id) {
             this.isEdit = true; this.editId = id; this.errors = {}; this.loading = true; this.showModal = true;
             const res = await fetch(`/admin/users/${id}`, { headers: { 'Accept': 'application/json' } });
             const data = await res.json();
-            this.form = { name: data.name, username: data.username || '', email: data.email, password: '', role: data.role, kota_id: data.kota_id ? String(data.kota_id) : '' };
+            this.form = { name: data.name, username: data.username || '', email: data.email, password: '', role: data.role || 'Staf', kota_id: data.kota_id ? String(data.kota_id) : '', section: data.section || '', warehouse_id: data.warehouse_id ? String(data.warehouse_id) : '', speedshop_id: data.speedshop_id ? String(data.speedshop_id) : '' };
             this.loading = false;
         },
         async save() {
@@ -161,6 +207,9 @@ function usersCrud() {
             const url = this.isEdit ? `/admin/users/${this.editId}` : '/admin/users';
             const payload = { ...this.form };
             if (!payload.kota_id) payload.kota_id = null;
+            if (!payload.section) payload.section = null;
+            if (payload.section !== 'warehouse') payload.warehouse_id = null;
+            if (payload.section !== 'speedshop') payload.speedshop_id = null;
             if (this.isEdit && !payload.password) payload.password = null;
             const res = await fetch(url, {
                 method: this.isEdit ? 'PUT' : 'POST',

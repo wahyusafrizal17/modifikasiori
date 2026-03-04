@@ -10,7 +10,7 @@ class SupplierController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Supplier::with('kota')->forUser();
+        $query = Supplier::with('kota');
 
         if ($request->filled('search')) {
             $search = $request->search;
@@ -35,7 +35,6 @@ class SupplierController extends Controller
             'kota_id' => ['nullable', 'exists:kotas,id'],
         ]);
 
-        $validated['warehouse_id'] = auth()->user()->activeWarehouseId();
         Supplier::create($validated);
         session()->flash('success', 'Supplier berhasil ditambahkan.');
 

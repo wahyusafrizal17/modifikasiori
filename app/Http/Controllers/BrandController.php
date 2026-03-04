@@ -9,7 +9,7 @@ class BrandController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Brand::forUser();
+        $query = Brand::query();
 
         if ($request->filled('search')) {
             $query->where('nama', 'like', "%{$request->search}%");
@@ -26,7 +26,6 @@ class BrandController extends Controller
             'nama' => ['required', 'string', 'max:255', 'unique:brands'],
         ]);
 
-        $validated['warehouse_id'] = auth()->user()->activeWarehouseId();
         Brand::create($validated);
         session()->flash('success', 'Brand berhasil ditambahkan.');
 
